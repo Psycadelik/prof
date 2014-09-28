@@ -139,6 +139,24 @@ angular.module('prof',[]).controller('prof-controller', function($scope, $timeou
       length: 4,
       loop: 4
     },
+    {
+      type:'bored',
+      url:'img/blink.jpg',
+      fps:3,
+      length:1
+    },
+    {
+      type:'bored',
+      url:'img/blink.jpg',
+      fps:10,
+      length:1
+    },
+    {
+      type:'bored',
+      url:'img/blink.jpg',
+      fps:5,
+      length:1
+    }
   ];
 
   //rearrange sprites randomly and add flag to track if used
@@ -200,6 +218,7 @@ angular.module('prof',[]).controller('prof-controller', function($scope, $timeou
     $scope.bored = $timeout(function(){
       console.log('bored')
       $scope.$broadcast('animate', $scope.getResponse('bored'), function(){
+        $timeout.cancel($scope.bored);
         $scope.bored = $timeout(function(){ $scope.getBored() });
       });
     }, boredin)
