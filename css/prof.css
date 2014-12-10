@@ -113,11 +113,11 @@ button.button.inverted:hover {
 }
 
 .prof-input > * {
-  border: 1px solid #CCCCCC; 
+  border: 6px solid #ECECEC; 
 }
 .prof-input > *:focus {
   outline: none;
-  border-color: #009AFE;
+  border-color: #CFCFCF;
 }
 .prof-input.ok-border > * {
   border-color: #17E217;
@@ -131,7 +131,7 @@ button.button.inverted:hover {
 .prof-input input[type="password"],
 .prof-input select,
 .prof-input textarea {
-  padding: .25em .5em;
+  padding: .25em .35em;
   width:100%;
   resize:none;
 }
@@ -286,15 +286,10 @@ table th {
 
 
 
-/* 810px */
-@media (min-width: 50.625em) {
-
-}
-
 /* the prefessor! */
 .the-prof{
   width:100%;
-  margin-top:2em;
+  padding-top:2em;
   text-align:center;
 }
 .the-prof > div{
@@ -319,6 +314,13 @@ table th {
   display: block;
 }
 
+.gametype{
+  text-align: center;
+}
+.gametype .button {
+  margin-bottom: 1em;
+  display: inline-block;
+}
 .the-problem{
   text-align:center;
   font-size:6em;
@@ -340,10 +342,27 @@ table th {
   top:2em;
   left:1em;
 }
-.score p{
+.score p,
+.timer p{
   font-weight: 300;
   font-size:2em;
   margin-top:0;
   margin-bottom:0;
+}
+
+.timer {
+  position: absolute;
+  top:2em;
+  right:1em;
+  width:6em;
+}
+
+
+/* 600px */
+@media (max-width: 600px) {
+  .the-prof > div{ width: 100%; }
+  .the-problem{ font-size: 3em; }
+  .prof-input input[type="text"]{ padding-left:.3em;padding-right:.3em}
+  .score p{ font-size: 1.25em; } 
 }
 
