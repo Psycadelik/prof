@@ -27,8 +27,14 @@
     </animator>
   </div>
 </div>
-
-<form novalidate class="the-problem oswald" name="problem" ng-submit="submit(answer)">
+<div ng-show="!gametype" class="gametype">
+  <h2 class="oswald">Choose game:</h2>
+  <button class="button" ng-click="entergame('addsubtract')">Addition/Subtraction</button>
+  <button class="button" ng-click="entergame('multiply')">Multiplication</button>
+  <button class="button" ng-click="entergame('divide')">Division</button>
+  <button class="button" ng-click="entergame('mixed')">Mixed</button>
+</div>
+<form novalidate ng-show="gametype" class="the-problem oswald" name="problem" ng-submit="submit(answer)">
   <p>
     <span ng-bind="number1"></span>
     <span ng-bind="operator1"></span>
@@ -38,8 +44,7 @@
       class="prof-input"
       ng-class="{
       'error-border':!problem.$valid,
-      'ok-border':problem.$valid && submitted,
-      'disabled':animating }">
+      'ok-border':problem.$valid && submitted}">
       <input class="animated" type="text" name="answer" ng-model="answer">
     </label>
   </p>
@@ -49,7 +54,18 @@
   <p>Right: <b ng-bind="score.right" class="ok"></b></p>
   <p>Wrong: <b ng-bind="score.wrong" class="error"></b></p>
 </div>
-<!-- <button style="margin-bottom:2em;" class="button" ng-click="generateQuestion()">press</button> -->
+
+<div class="timer oswald" ng-model="timer">
+  <p ng-show="gametype" ng-class="{error:timer.min==0 && timer.sec==0}">
+    <span ng-bind="timer.min"></span>:
+    <span ng-bind="timer.sec<10?'0'+timer.sec:timer.sec"></span>
+  </p>
+<!--   <p ng-show="!gametype">
+    <input type="checkbox" ng-bind="usetimer">Use timer
+    Min: <input type="text" ng-bind="timer.min" style="width:2em;">
+    Sec: <input type="text" ng-bind="timer.sec" style="width:2em;">
+  </p> -->
+</div>
 
 </body>
 </html>
