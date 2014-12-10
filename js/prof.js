@@ -1,16 +1,18 @@
 'use strict';
 
 // Prof App
-angular.module('prof',[]).controller('prof-controller', function($scope, $timeout, $filter) {
+angular.module('prof',[]).controller('prof-controller', function($scope, $timeout, $interval, $filter) {
   
+  $scope.gametype = null
   $scope.number1 = null;
   $scope.number2 = null;
-  $scope.operators = ['+','-']
+  $scope.operators = ['+','-','x','/'];
   $scope.operator1 = "+";
   $scope.rightanswer = null;
   $scope.submitted = false;
   $scope.animating = false;
   $scope.score = { right:0, wrong:0 };
+  $scope.timer = { min:2, sec:0 };
 
   $scope.sprites = [
     {
@@ -192,23 +194,24 @@ angular.module('prof',[]).controller('prof-controller', function($scope, $timeou
   }
   //handle entered answer
   $scope.submit = function(answer){
+    if(!answer) return;
     $timeout.cancel($scope.bored);
     $scope.submitted = true;
+    $scope.answer = '';
     $scope.problem.$valid = parseInt(answer) == $scope.rightanswer ? true : false;
+    if($scope.problem.$valid) {
+      $scope.generateQuestion();
+      $scope.score.right ++;
+    } else {
+      $scope.score.wrong ++;
+    }
     // run response animation
     var type = $scope.problem.$valid ? 'right' : 'wrong';
     $scope.animating = true;
     $scope.$broadcast('animate', $scope.getResponse(type), function(){
       $scope.animating = false;
       $scope.submitted = false;
-      $scope.answer = '';
       $scope.getBored();
-      if($scope.problem.$valid) {
-        $scope.generateQuestion();
-        $scope.score.right ++;
-      } else {
-        $scope.score.wrong ++;
-      }
     });
   };
 
@@ -216,7 +219,6 @@ angular.module('prof',[]).controller('prof-controller', function($scope, $timeou
   $scope.getBored = function(){
     var boredin = Math.round(Math.random() * 5000 + 5000)
     $scope.bored = $timeout(function(){
-      console.log('bored')
       $scope.$broadcast('animate', $scope.getResponse('bored'), function(){
         $timeout.cancel($scope.bored);
         $scope.bored = $timeout(function(){ $scope.getBored() });
@@ -227,7 +229,20 @@ angular.module('prof',[]).controller('prof-controller', function($scope, $timeou
   //generate new math question
   $scope.generateQuestion = function(){
     $scope.answer = '';
-    $scope.operator1 = $scope.operators[Math.floor(Math.random() * $scope.operators.length)];
+    switch($scope.gametype){
+      case 'mixed': $scope.operator1 = $scope.operators[Math.floor(Math.random() * $scope.operators.length)];    
+      break;
+      case 'addsubtract': $scope.operators = ['+','-']; 
+        $scope.operator1 = $scope.operators[Math.floor(Math.random() * $scope.operators.length)];
+      break;
+      case 'multiply': $scope.operator1 = 'x';
+      break;
+      case 'divide': $scope.operator1 = '/';
+      break;
+      default: $scope.operator1 = '+';
+      break;
+    }
+
     $scope.number1 = Math.round( Math.random()*10 );
     $scope.number2 = Math.round( Math.random()*10 );
     switch($scope.operator1){
@@ -242,12 +257,35 @@ angular.module('prof',[]).controller('prof-controller', function($scope, $timeou
       break;
       case 'x': $scope.rightanswer = $scope.number1 * $scope.number2;
       break;
+      case '/': $scope.number2 = $scope.number2 < 1 ? 1 : $scope.number2; 
+                $scope.rightanswer = $scope.number1;
+                $scope.number1 = $scope.number1 * $scope.number2;
+      break;
       default: $scope.rightanswer = $scope.number1 + $scope.number2;
     }
   };
 
-  $scope.generateQuestion();
-  $scope.getBored();
+  var updatetimer = function(){
+    if($scope.timer.min==0 && $scope.timer.sec==0){
+      $interval.cancel(updatetimer);
+    } else if ($scope.timer.sec==0){
+      $scope.timer.min -= 1;
+      $scope.timer.sec = 59;
+    } else {
+      $scope.timer.sec -= 1;
+    }
+  };
+
+  
+
+  $scope.entergame = function(type){
+    $scope.gametype = type;
+    $scope.generateQuestion();
+    $scope.getBored();
+    //$interval(updatetimer, 1000)
+  }
+
+  
 
 
  
